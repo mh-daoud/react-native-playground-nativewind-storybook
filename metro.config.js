@@ -1,4 +1,7 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const { withNativeWind } = require('nativewind/metro')
+const path = require('path');
+const { generate } = require('@storybook/react-native/scripts/generate');
 
 /**
  * Metro configuration
@@ -6,6 +9,17 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+
+generate({
+    configPath: path.resolve(__dirname, './.storybook'),
+});
+
+const config = mergeConfig(getDefaultConfig(__dirname), {
+    transformer: {
+        unstable_allowRequireContext: true,
+    },
+
+});;
+
+module.exports = withNativeWind(config, { input: './global.css' })
